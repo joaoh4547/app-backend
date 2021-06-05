@@ -6,9 +6,10 @@ class User {
     @prop({ required: false })
     last_name: string;
     @prop({
+        required: true,
         validate: {
-            validator: (v) => {
-                return v.match(
+            validator: (value) => {
+                return value.match(
                     /^\w+([-+.']\w+)*@\w+([-.]\w+)*\.\w+([-.]\w+)*$/
                 );
             },

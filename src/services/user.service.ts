@@ -2,6 +2,7 @@ import { MongoError } from "mongodb";
 import { UserCreateDTO } from "./../dtos/user.dto";
 import User from "../models/User";
 import bcrypt from "bcrypt";
+import { Error } from "mongoose";
 import ValidationError, { FieldError } from "../errors/validation";
 
 class UserService {
@@ -9,7 +10,11 @@ class UserService {
         return User.find().exec();
     }
 
+    async findById(id: string) {
+        return User.findById(id);
+    }
     async create(userdata: UserCreateDTO) {
+        let err = new ValidationError();
         try {
             userdata.password = await bcrypt.hash(userdata.password, 8);
             const user = (await User.create(userdata)).toJSON();
@@ -25,7 +30,6 @@ class UserService {
 
                     const field_name = field.trim();
 
-                    let err = new ValidationError();
                     err.errors.push(
                         new FieldError(
                             field_name,
@@ -34,12 +38,21 @@ class UserService {
                     );
                     return err;
                 }
+            } else if (e instanceof Error) {
+                const field_validation = e.message
+                    .split("validation failed:")[1]
+                    .split(":");
+                const field_validation_name = field_validation[0].trim();
+                const field_validation_message = field_validation[1].trim();
+                err.errors.push(
+                    new FieldError(
+                        field_validation_name,
+                        field_validation_message
+                    )
+                );
+                return err;
             }
         }
-    }
-
-    async findById(id: string) {
-        return User.findById(id);
     }
 }
 
