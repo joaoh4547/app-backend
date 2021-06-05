@@ -3,7 +3,7 @@
   "version": "0.0.1",
   "description": "Aplicação Backend Com Node e MongoDB",
   "main": "index.js",
-  "repository": "https://github.com/joaoh4547/backend-application.git",
+  "repository": "https://github.com/joaoh4547/app-backend",
   "author": "João Henrique",
   "license": "MIT",
   "dependencies": {
