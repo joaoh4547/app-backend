@@ -11,5 +11,13 @@ export class FieldError {
         this.message = message;
     }
 }
+class BaseError {
+    message: string;
+    constructor(message: string) {
+        this.message = message;
+    }
+}
+
+export class NotFound extends BaseError {}
 
 export default ValidationError;

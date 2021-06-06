@@ -1,9 +1,9 @@
 import { MongoError } from "mongodb";
-import { UserCreateDTO } from "./../dtos/user.dto";
+import { UserCreateDTO, UserUpdateDTO } from "./../dtos/user.dto";
 import User from "../models/User";
 import bcrypt from "bcrypt";
 import { Error } from "mongoose";
-import ValidationError, { FieldError } from "../errors/validation";
+import ValidationError, { FieldError, NotFound } from "../errors/validation";
 
 class UserService {
     async findAll() {
@@ -11,8 +11,9 @@ class UserService {
     }
 
     async findById(id: string) {
-        return User.findById(id);
+        return User.findById(id).exec();
     }
+
     async create(userdata: UserCreateDTO) {
         let err = new ValidationError();
         try {
@@ -53,6 +54,22 @@ class UserService {
                 return err;
             }
         }
+    }
+
+    async update(userdata: UserUpdateDTO) {
+        if (await this.findById(userdata.id)) {
+            User.findByIdAndUpdate(userdata.id, {
+                ...userdata,
+            }).exec();
+
+            return User.findById(userdata.id).exec();
+        } else {
+            return new NotFound("Usuario não encontrado");
+        }
+    }
+
+    async delete(id: string) {
+        User.findByIdAndDelete(id).exec();
     }
 }
 
