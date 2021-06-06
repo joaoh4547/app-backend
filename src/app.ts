@@ -15,7 +15,7 @@ class App {
         this.app.use("/api", router);
     }
 
-    static startup(port: number) {
+    static startup(port: number | string) {
         new App().app.listen(port, () => {
             console.log(`App Listen on Port: ${port}`);
         });
