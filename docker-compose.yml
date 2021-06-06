@@ -2,6 +2,7 @@ version: "3"
 
 services:
     db:
+        container_name: mongo_db
         image: mongo
         environment:
             MONGO_INITDB_ROOT_USERNAME: admin
@@ -12,6 +13,7 @@ services:
         networks:
             - app-network
     api:
+        container_name: API
         build: .
         command: node ./index.js
         environment:
