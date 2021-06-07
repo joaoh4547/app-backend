@@ -19,7 +19,7 @@ class User {
     })
     email: string;
 
-    @prop({ select: false })
+    @prop({})
     password: string;
 }
 

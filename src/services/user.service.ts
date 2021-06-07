@@ -7,11 +7,17 @@ import ValidationError, { FieldError, NotFound } from "../errors/validation";
 
 class UserService {
     async findAll() {
-        return User.find().exec();
+        return (await User.find().exec()).map((i) => {
+            const u = i.toJSON();
+            delete u.password;
+            return u;
+        });
     }
 
     async findById(id: string) {
-        return User.findById(id).exec();
+        const user = (await User.findById(id).exec()).toJSON();
+        delete user.password;
+        return user;
     }
 
     async create(userdata: UserCreateDTO) {
@@ -61,8 +67,9 @@ class UserService {
             User.findByIdAndUpdate(userdata.id, {
                 ...userdata,
             }).exec();
-
-            return User.findById(userdata.id).exec();
+            const user = (await User.findById(userdata.id).exec()).toJSON();
+            delete user.password;
+            return user;
         } else {
             return new NotFound("Usuario não encontrado");
         }
